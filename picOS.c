@@ -12,12 +12,9 @@ void del_task(void);
 
 uint32_t * os_stack;
 
-#define THREAD_RETURN 0xFFFFFFFD //Tells the handler to return using the PSP
-
 void startOS(){
 	//os_stack is a pointer to a valid stack address
-	//it is used to reset the kernel stack before loading
-	//the task 
+	//it is used to reset the kernel stack before loading the task 
 	__asm volatile{ MRS os_stack, msp};
 
 	//TODO prevent systick before yield!
@@ -28,11 +25,11 @@ void startOS(){
 
 int create_task(task_t *task, void (*start)(void))
 {
-	if(task->stack == 0) return -1;
+	if(task->stack == 0) return -1;		//invalid stack
+	//TODO check for suspended tasks!
 	if(task_count >= TASK_LIMIT) return -1;
 	
-
-	task->stack += STACK_SIZE - 32; // end of stack, minus what we are about to push
+	task->stack += STACK_SIZE - 32; //end of stack, minus what we are about to push
 	
 	task->stack[13]=(uint32_t)del_task; //delete function
 	task->stack[14]=(unsigned int)start;
@@ -79,7 +76,7 @@ void SysTick_Handler(void){
 }
  
 //yield has been called. reload systick timer to  
-//garantee correct round robin time
+//guarantee correct round robin time
 void SVC_Handler(void){
 		SysTick->VAL   = 0;
 		
@@ -121,5 +118,5 @@ void inline yield(void){
 void del_task(void){
 	task_list[current_task]->task_state=SUSPENDED;
   yield();
-  while(1); //unreached
+  while(1); //unreachable
 }
