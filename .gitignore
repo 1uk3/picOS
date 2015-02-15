@@ -13,7 +13,6 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
-
 # Windows shortcuts
 *.lnk
 
@@ -41,3 +40,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.o
+*.d
+*.lst
+*.map
+*.bak
+*.crf
+*.htm
