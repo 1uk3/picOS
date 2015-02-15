@@ -8,55 +8,56 @@ void off_func(void);
 void LED_init(void);
 
 #define TASK(name,ptr) \
-		unsigned int name##_stack[STACK_SIZE];\
-		task_t name##_task;	\
-		name##_task.stack = name##_stack; \
-		create_task(&name##_task,ptr);
+    unsigned int name##_stack[STACK_SIZE];\
+    task_t name##_task;  \
+    name##_task.stack = name##_stack; \
+    create_task(&name##_task,ptr);
 
 
 int main (void) {
 
-	SystemInit();
+  SystemInit();
 
-	LED_init();
+  LED_init();
 
-	TASK(on,&on_func);
-	TASK(off,&off_func);
-	
-	startOS();
-	while(1){}
+  TASK(on,&on_func);
+  TASK(off,&off_func);
+  
+  startOS();
+  
+  while(1){}
 
 }
 
 
 void off_func(void)
 {
-	while (1) {
-		GPIOB->BSRR = GPIO_Pin_0;	//reset led
-		//yield();
-	}
+  while (1) {
+    GPIOB->BSRR = GPIO_Pin_0;  //reset led
+    //yield();
+  }
 }
 
 void on_func(void)
 {
-	while (1) {
-		GPIOB->BRR = GPIO_Pin_0;	//set led
-		//yield();
-	}
+  while (1) {
+    GPIOB->BRR = GPIO_Pin_0;  //set led
+    //yield();
+  }
 }
 
 void LED_init(){
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-		
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    
 }
 
 #ifdef  USE_FULL_ASSERT
